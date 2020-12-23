@@ -10,31 +10,87 @@ class TicTacToe extends Component {
         super(props);
 
         this.state = {
+            Players: [
+                {id: 0,
+                name: "Player 1",
+                marker: "X",
+                humanOrAI: "Human",
+                hideAIDifficultyChoice: true,
+                AIDifficulty: "Easy",
+                totalWins: 0},
+
+                {id: 1,
+                name: "Player 2",
+                marker: "O",
+                humanOrAI: "Human",
+                hideAIDifficultyChoice: true,
+                AIDifficulty: "Easy",
+                totalWins: 0}],
+
+            board: ['', '', '', 
+                    '', '', '', 
+                    '', '', ''],
+            disableBoard: true,
+            gameInfo: "Click Start",
         };
 
         this.startClicked = this.startClicked.bind(this);
         this.resetClicked = this.resetClicked.bind(this);
+
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onChangeHumanOrAI = this.onChangeHumanOrAI.bind(this);
+        this.onChangeAIDifficulty = this.onChangeAIDifficulty.bind(this);
     }
 
     startClicked() {
         console.log('start');
+
+        this.setState({disableBoard: false});
     }
 
     resetClicked() {
         console.log('reset');
     }
 
+    onChangeName(event, id) {
+        let players = [...this.state.Players];
+        players[id].name = event.target.value;
+        this.setState({players});
+    }
+
+    onChangeHumanOrAI(event, id) {
+        let players = [...this.state.Players];
+
+        players[id].humanOrAI = event.target.value; 
+        
+        if (event.target.value === "AI") {
+            players[id].hideAIDifficultyChoice = false;
+        } else {
+            players[id].hideAIDifficultyChoice = true;
+        }
+
+        this.setState({players});
+    }
+
+    onChangeAIDifficulty(event, id) {
+        let players = [...this.state.Players];
+        players[id].AIDifficulty = event.target.value;
+        this.setState({players});
+    }
+
     render() {
         return (
             <div>
                 <div className="gameInfo">
-                    <GameInfo startClicked={this.startClicked} resetClicked={this.resetClicked}/>
+                    <GameInfo gameInfo={this.state.gameInfo} startClicked={this.startClicked} resetClicked={this.resetClicked}/>
                 </div>
                 
                 <div className="mainGrid">
-                    <Player id='1'/>
-                    <GameBoard />
-                    <Player id='2'/>
+                    <Player Player={this.state.Players[0]} ID={0} changeName={this.onChangeName} 
+                            changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}/>
+                    <GameBoard board={this.state.board} disableBoard={this.state.disableBoard}/>
+                    <Player Player={this.state.Players[1]} ID={1} changeName={this.onChangeName} 
+                            changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}/>
                 </div>
             </div>
         );

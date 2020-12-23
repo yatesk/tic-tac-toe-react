@@ -3,69 +3,26 @@ import React, { Component } from "react";
 import "../index.css";
 
 class Player extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {Player1: {
-            id: props.id,
-            name: "Player " + props.id,
-            marker: "X",
-            humanOrAI: "Human",
-            hideAIDifficultyChoice: true,
-            AIDifficulty: "Easy",
-            totalWins: 0},
-            Player2: {
-                id: props.id,
-                name: "Player " + props.id,
-                marker: "X",
-                humanOrAI: "Human",
-                hideAIDifficultyChoice: true,
-                AIDifficulty: "Easy",
-                totalWins: 0},
-        };
-
-        this.onChangeName = this.onChangeName.bind(this);
-        this.onChangeHumanOrAI = this.onChangeHumanOrAI.bind(this);
-        this.onChangeAIDifficulty = this.onChangeAIDifficulty.bind(this);
-    }
-
-    onChangeName(event) {
-        this.setState({name: event.target.value});
-    }
-
-    onChangeHumanOrAI(event) {
-        this.setState({humanOrAI: event.target.value}) 
-        
-        if (event.target.value === "AI") {
-            this.setState({hideAIDifficultyChoice: false});
-        } else {
-            this.setState({hideAIDifficultyChoice: true});
-        }
-    }
-
-    onChangeAIDifficulty(event) {
-        this.setState({AIDifficulty: event.target.value})   
-    }
 
     render() {
         return (
             <div className='sidebar'>
-            <input type="text" id="playerName" value={this.state.name} onChange={this.onChangeName} className="playerName"/>
+            <input type="text" id="playerName" value={this.props.Player.name} onChange={(e) => {this.props.changeName(e, this.props.Player.id)}} className="playerName"/>
             <div>
-              <input type="radio" name={"player"+this.state.id} value="Human" checked={this.state.humanOrAI === 'Human'} onChange={this.onChangeHumanOrAI}/>
-              <label htmlFor="playerHuman">Human</label>
-              <input type="radio" name={"player"+this.state.id} value="AI" checked={this.state.humanOrAI === 'AI'} onChange={this.onChangeHumanOrAI}/>
-              <label htmlFor="playerAI">AI</label>
+              <input type="radio" id={"player"+this.props.Player.id+"Human"} name={"player"+this.props.Player.id} value="Human" checked={this.props.Player.humanOrAI === 'Human'} onChange={(e) => {this.props.changeHumanOrAI(e, this.props.Player.id)}}/>
+              <label htmlFor={"player"+this.props.Player.id+"Human"}>Human</label>
+              <input type="radio" id={"player"+this.props.Player.id+"AI"} name={"player"+this.props.Player.id} value="AI" checked={this.props.Player.humanOrAI === 'AI'} onChange={(e) => {this.props.changeHumanOrAI(e, this.props.Player.id)}}/>
+              <label htmlFor={"player"+this.props.Player.id+"AI"}>AI</label>
             </div>
-            <div className={this.state.hideAIDifficultyChoice ? 'hidden' : ''}>
-              <input type="radio" name={"player"+this.state.id+"AIDifficulty"} value="Easy" checked={this.state.AIDifficulty === 'Easy'} onChange={this.onChangeAIDifficulty}/>
-              <label htmlFor="AIEasy">Easy</label>
-              <input type="radio" name={"player"+this.state.id+"AIDifficulty"} value="Medium" checked={this.state.AIDifficulty === 'Medium'} onChange={this.onChangeAIDifficulty}/>
-              <label htmlFor="AIMedium">Medium</label>
+            <div className={this.props.Player.hideAIDifficultyChoice ? 'hidden' : ''}>
+              <input type="radio" id={"player"+this.props.Player.id+"Easy"} name={"player"+this.props.Player.id+this.props.Player.AIDifficulty} value="Easy" checked={this.props.Player.AIDifficulty === 'Easy'} onChange={(e) => {this.props.changeAIDifficulty(e, this.props.Player.id)}}/>
+              <label htmlFor={"player"+this.props.Player.id+"Easy"}>Easy</label>
+              <input type="radio" id={"player"+this.props.Player.id+"Medium"} name={"player"+this.props.Player.id+this.props.Player.AIDifficulty} value="Medium" checked={this.props.Player.AIDifficulty === 'Medium'} onChange={(e) => {this.props.changeAIDifficulty(e, this.props.Player.id)}}/>
+              <label htmlFor={"player"+this.props.Player.id+"Medium"}>Medium</label>
             </div>
       
             <label className='wins'>Wins: </label>
-            <label className='wins'>{this.state.totalWins}</label>
+            <label className='wins'>{this.props.Player.totalWins}</label>
           </div>
         );
     }
