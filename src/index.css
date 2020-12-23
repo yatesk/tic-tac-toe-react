@@ -1,5 +1,68 @@
-body {
-    padding: 50px;
-    background-color: #959ba1;
-    font-family: sans-serif;
-}
+
+  html {
+    font-size: 30px;
+    background-color: rgb(167, 167, 167);
+  }
+  
+  h1 {
+      font-size: 48px;
+      text-align: center;
+  }
+
+  .gameInfo {
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  .mainGrid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+  
+  }
+  
+  .gameBoardGrid {
+    display: grid;
+    grid-template-rows: 100px 100px 100px;
+    grid-template-columns: 100px 100px 100px;
+    align-content: center;
+    justify-content: center;
+    background-color: darkgray;
+  }
+  
+  .cell {
+    font-size: 40px;
+  }
+  
+  .sidebar {
+    display: block;
+    width: 200px;
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+  
+  input {
+    font-size: 20px;
+    background: lightgray;
+  }
+  
+  label {
+    font-size: 20px;
+  }
+  
+  .playerName {
+    font-size: 32px;
+  }
+  
+  .testMargin {
+    margin-right: 20px;
+  }
+  
+  .wins {
+    font-size: 40px;
+  }
+
+  /* still takes up space */
+  .hidden { 
+    visibility: hidden; 
+  }
