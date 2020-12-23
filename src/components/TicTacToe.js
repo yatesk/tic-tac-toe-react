@@ -11,13 +11,24 @@ class TicTacToe extends Component {
 
         this.state = {
         };
+
+        this.startClicked = this.startClicked.bind(this);
+        this.resetClicked = this.resetClicked.bind(this);
+    }
+
+    startClicked() {
+        console.log('start');
+    }
+
+    resetClicked() {
+        console.log('reset');
     }
 
     render() {
         return (
             <div>
                 <div className="gameInfo">
-                    <GameInfo />
+                    <GameInfo startClicked={this.startClicked} resetClicked={this.resetClicked}/>
                 </div>
                 
                 <div className="mainGrid">

@@ -15,8 +15,6 @@ class GameBoard extends Component {
     }
 
     render() {
-        console.log(this.state.board[0]);
-
         return (
             <div className="gameBoardGrid">
             <input type="button" className='cell' id='cell0' disabled={this.state.disableBoard} value={this.state.board[0]}/>

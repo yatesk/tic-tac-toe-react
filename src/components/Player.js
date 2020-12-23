@@ -6,14 +6,22 @@ class Player extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.state = {Player1: {
             id: props.id,
             name: "Player " + props.id,
             marker: "X",
             humanOrAI: "Human",
             hideAIDifficultyChoice: true,
             AIDifficulty: "Easy",
-            totalWins: 0
+            totalWins: 0},
+            Player2: {
+                id: props.id,
+                name: "Player " + props.id,
+                marker: "X",
+                humanOrAI: "Human",
+                hideAIDifficultyChoice: true,
+                AIDifficulty: "Easy",
+                totalWins: 0},
         };
 
         this.onChangeName = this.onChangeName.bind(this);
