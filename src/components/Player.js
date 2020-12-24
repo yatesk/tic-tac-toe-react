@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import "../index.css";
 
 class Player extends Component {
@@ -23,8 +22,6 @@ class Player extends Component {
   }
 
   render() {
-    
-
       return (
           <div className='sidebar'>
           <input type="text" id="playerName" value={this.props.Player.name} onChange={(e) => {this.props.changeName(e, this.props.Player.id)}} className="playerName"/>
@@ -47,7 +44,5 @@ class Player extends Component {
       );
   }
 }
-
-
 
 export default Player;

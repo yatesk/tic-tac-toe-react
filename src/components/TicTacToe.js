@@ -5,35 +5,40 @@ import Player from "./Player"
 import GameBoard from "./GameBoard"
 import "../index.css";
 
+const buildInitialState = () => ({
+    Players: [
+        {id: 0,
+        name: "Player 1",
+        marker: "X",
+        humanOrAI: "Human",
+        hideAIDifficultyChoice: true,
+        AIDifficulty: "Easy",
+        totalWins: 0},
+
+        {id: 1,
+        name: "Player 2",
+        marker: "O",
+        humanOrAI: "Human",
+        hideAIDifficultyChoice: true,
+        AIDifficulty: "Easy",
+        totalWins: 0}],
+
+    board: ['', '', '', 
+            '', '', '', 
+            '', '', ''],
+    disableBoard: true,
+    gameInfo: "Click Start",
+
+    hideUnChecked: false
+});
+
+
 class TicTacToe extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            Players: [
-                {id: 0,
-                name: "Player 1",
-                marker: "X",
-                humanOrAI: "Human",
-                hideAIDifficultyChoice: true,
-                AIDifficulty: "Easy",
-                totalWins: 0},
-
-                {id: 1,
-                name: "Player 2",
-                marker: "O",
-                humanOrAI: "Human",
-                hideAIDifficultyChoice: true,
-                AIDifficulty: "Easy",
-                totalWins: 0}],
-
-            board: ['', '', '', 
-                    '', '', '', 
-                    '', '', ''],
-            disableBoard: true,
-            gameInfo: "Click Start",
-
-            hideUnChecked: false
+            ...buildInitialState()
         };
 
         this.startClicked = this.startClicked.bind(this);
@@ -45,16 +50,14 @@ class TicTacToe extends Component {
     }
 
     startClicked() {
-        console.log(this.state.Players);
-
         this.setState({hideUnChecked: true});
-
-
         this.setState({disableBoard: false});
     }
 
     resetClicked() {
         console.log('reset');
+
+        this.setState({...buildInitialState()});
     }
 
     onChangeName(event, id) {
