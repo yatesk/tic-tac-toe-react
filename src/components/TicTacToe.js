@@ -26,6 +26,7 @@ const buildInitialState = () => ({
     board: ['', '', '', 
             '', '', '', 
             '', '', ''],
+    whoseTurn: 'X',
     disableBoard: true,
     gameInfo: "Click Start",
 
@@ -47,6 +48,8 @@ class TicTacToe extends Component {
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeHumanOrAI = this.onChangeHumanOrAI.bind(this);
         this.onChangeAIDifficulty = this.onChangeAIDifficulty.bind(this);
+
+        this.cellClicked = this.cellClicked.bind(this);
     }
 
     startClicked() {
@@ -86,6 +89,14 @@ class TicTacToe extends Component {
         this.setState({players});
     }
 
+    cellClicked(event) {
+       let newBoard = [...this.state.board];
+
+       newBoard[parseInt(event.target.id)] = this.state.whoseTurn;
+
+       this.setState({board: newBoard});
+    }
+
     render() {
         return (
             <div>
@@ -97,7 +108,7 @@ class TicTacToe extends Component {
                     <Player Player={this.state.Players[0]} ID={0} changeName={this.onChangeName} 
                             changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
                             hideUnchecked={this.state.hideUnChecked}/>
-                    <GameBoard board={this.state.board} disableBoard={this.state.disableBoard}/>
+                    <GameBoard board={this.state.board} disableBoard={this.state.disableBoard} cellClicked={this.cellClicked}/>
                     <Player Player={this.state.Players[1]} ID={1} changeName={this.onChangeName} 
                             changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
                             hideUnchecked={this.state.hideUnChecked}/>

@@ -34,7 +34,7 @@ class GameInfo extends Component {
         return (
             <div>
                 <h4>{this.props.gameInfo}</h4>
-                <div>
+                <div>                                                                              
                     <input type="button" id="start" disabled={this.state.startIsDisabled} onClick={this.startClicked} value="Start"/> 
                     <input type="button" id="reset" disabled={this.state.resetIsDisabled} onClick={this.resetClicked} value="Reset"/> 
                 </div>
