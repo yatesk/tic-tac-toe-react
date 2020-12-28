@@ -29,14 +29,14 @@ const buildInitialState = () => ({
         }],
 
     board: ['', '', '',
-        '', '', '',
-        '', '', ''],
+            '', '', '',
+            '', '', ''],
     totalMarkedCells: 0,
-    whoseTurn: 'X',
+    whoseTurn: 0,
     disableBoard: true,
     gameInfo: "Click Start",
-
-    hideUnChecked: false
+    playAgainIsHidden: true,
+    hideUnChecked: false,
 });
 
 class TicTacToe extends Component {
@@ -49,6 +49,7 @@ class TicTacToe extends Component {
 
         this.startClicked = this.startClicked.bind(this);
         this.resetClicked = this.resetClicked.bind(this);
+        this.playAgainClicked = this.playAgainClicked.bind(this);
 
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeHumanOrAI = this.onChangeHumanOrAI.bind(this);
@@ -67,9 +68,22 @@ class TicTacToe extends Component {
     }
 
     resetClicked() {
-        console.log('reset');
-
         this.setState({ ...buildInitialState() });
+    }
+
+    playAgainClicked() {
+        const newBoard = [  '', '', '',
+                            '', '', '',
+                            '', '', ''];
+        this.setState({ board: newBoard });
+        this.setState({ playAgainIsHidden: true });
+        this.setState({ totalMarkedCells: 0 });
+        this.setState({ disableBoard: false });
+
+        // loser goes first next game
+        const nextTurn = 1 - this.state.whoseTurn;
+
+        this.setState({ whoseTurn: nextTurn });
     }
 
     onChangeName(event, id) {
@@ -104,10 +118,12 @@ class TicTacToe extends Component {
 
     AIMove() {
         // AI MOVES
-        if (this.state.Players[0].humanOrAI === 'AI') {
-            if (this.state.Players[0].AIDifficulty === "Easy") {
+        if (this.state.Players[this.state.whoseTurn].humanOrAI === 'AI') {
+            if (this.state.Players[this.state.whoseTurn].AIDifficulty === "Easy") {
+                console.log("p1 easy");
                 this.markCell(AI.Easy(this.state.board));
-            } else if (this.state.Players[0].AIDifficulty === "Medium") {
+            } else if (this.state.Players[this.state.whoseTurn].AIDifficulty === "Medium") {
+                console.log("p1 medium");
                 this.markCell(AI.Medium(this.state.board));
             }
         }
@@ -117,37 +133,54 @@ class TicTacToe extends Component {
         if (this.state.board[index] === '') {
             let newBoard = [...this.state.board];
 
-            newBoard[index] = this.state.whoseTurn;
+            newBoard[index] = this.state.Players[this.state.whoseTurn].marker;
 
             this.setState({ board: newBoard });
-
             this.setState({ totalMarkedCells: this.state.totalMarkedCells + 1 })
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.checkForWinner(this.state.whoseTurn)) {
-            if (this.state.Players[0].marker === this.state.whoseTurn) {
-                /// player 1 wins
-                console.log("player1 won");
-            } else {
-                // player 2 wins
-                console.log('Player2 won');
-            }
-
-            // check to avoid infinite loop
-            if (this.state.disableBoard === false) {
-                this.setState({ disableBoard: true });
-            }
-        } else {
+        if (this.checkForWinner(this.state.Players[this.state.whoseTurn].marker)) {
+            this.gameOver();
+        } else if(this.state.totalMarkedCells != prevState.totalMarkedCells){
             this.nextPlayersTurn(prevState);
+            this.AIMove();
         }
     }
 
+    gameOver() {
+        if (this.state.totalMarkedCells === 9) {
+            // to avoid infinite loop
+            this.setStateOnlyWhenValueChanged('gameInfo', "Tie.");
+        }
+        /// player 1 wins
+        else if (this.state.Players[0].marker === this.state.Players[this.state.whoseTurn].marker) {
+            this.setStateOnlyWhenValueChanged('Players[0].totalWins', 55);
+            this.setStateOnlyWhenValueChanged('gameInfo', this.state.Players[0].name + " won!");
+        } 
+        // player 2 wins
+        else if (this.state.Players[1].marker === this.state.Players[this.state.whoseTurn].marker) {
+            this.setStateOnlyWhenValueChanged('gameInfo', this.state.Players[1].name + " won!");
+        }
+
+        this.setStateOnlyWhenValueChanged('disableBoard', true);
+        this.setStateOnlyWhenValueChanged('playAgainIsHidden', false);
+    }
+
+    // Prevents componentDidUpdate from entering an infinite loop
+    setStateOnlyWhenValueChanged(property, value) {
+        if (this.state[property] !== value) {
+            this.setState({[property]: value});
+        }
+    }
+
+    // componentWillUpdate(object nextProps, object nextState)
+    // instead - Using useState with useEffect
+
     checkForWinner(whoseTurnMarker) {
         if (this.state.totalMarkedCells === 9) {
-            // game ends in tie
-            console.log("tie")
+            // game ends in tie - no winner
             return true;
         }
 
@@ -198,8 +231,10 @@ class TicTacToe extends Component {
 
     nextPlayersTurn(prevState) {
         if (this.state.whoseTurn === prevState.whoseTurn) {
-            const nextTurn = this.state.whoseTurn === this.state.Players[0].marker ? this.state.Players[1].marker : this.state.Players[0].marker;
+            // const nextTurn = this.state.whoseTurn === this.state.Players[0].marker ? this.state.Players[1].marker : this.state.Players[0].marker;
             
+            const nextTurn = 1 - this.state.whoseTurn;
+
             this.setState({ whoseTurn: nextTurn });
         }
     }
@@ -208,7 +243,7 @@ class TicTacToe extends Component {
         return (
             <div>
                 <div className="gameInfo">
-                    <GameInfo gameInfo={this.state.gameInfo} startClicked={this.startClicked} resetClicked={this.resetClicked} />
+                    <GameInfo gameInfo={this.state.gameInfo} playAgainIsHidden={this.state.playAgainIsHidden} startClicked={this.startClicked} resetClicked={this.resetClicked} playAgainClicked={this.playAgainClicked}/>
                 </div>
 
                 <div className="mainGrid">

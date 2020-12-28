@@ -9,11 +9,12 @@ class GameInfo extends Component {
         this.state = {
             startIsDisabled: false,
             resetIsDisabled: false,
-            playAgainIsHidden: true
+            // playAgainIsHidden: true
         };
 
         this.startClicked = this.startClicked.bind(this);
         this.resetClicked = this.resetClicked.bind(this);
+        this.playAgainClicked = this.playAgainClicked.bind(this);
     }
 
     startClicked() {
@@ -30,6 +31,12 @@ class GameInfo extends Component {
         this.props.resetClicked();
     }
 
+    playAgainClicked() {
+
+        this.props.playAgainClicked();
+    }
+
+
     render() {
         return (
             <div>
@@ -38,7 +45,7 @@ class GameInfo extends Component {
                     <input type="button" id="start" disabled={this.state.startIsDisabled} onClick={this.startClicked} value="Start"/> 
                     <input type="button" id="reset" disabled={this.state.resetIsDisabled} onClick={this.resetClicked} value="Reset"/> 
                 </div>
-                <input type="button" className={this.state.playAgainIsHidden ? 'hidden' : ''} id="playAgain" value="Play Again?"/> 
+                <input type="button" id="playAgain" className={this.props.playAgainIsHidden ? 'hidden' : ''}  onClick={this.playAgainClicked} value="Play Again?"/> 
             </div>
         );
     }
