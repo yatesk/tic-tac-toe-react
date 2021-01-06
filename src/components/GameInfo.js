@@ -9,7 +9,6 @@ class GameInfo extends Component {
         this.state = {
             startIsDisabled: false,
             resetIsDisabled: false,
-            // playAgainIsHidden: true
         };
 
         this.startClicked = this.startClicked.bind(this);

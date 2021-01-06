@@ -247,11 +247,11 @@ class TicTacToe extends Component {
                 </div>
 
                 <div className="mainGrid">
-                    <Player Player={this.state.Players[0]} ID={0} changeName={this.onChangeName}
+                    <Player Player={this.state.Players[0]} changeName={this.onChangeName}
                         changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
                         hideUnchecked={this.state.hideUnChecked} />
                     <GameBoard board={this.state.board} disableBoard={this.state.disableBoard} cellClicked={this.cellClicked} />
-                    <Player Player={this.state.Players[1]} ID={1} changeName={this.onChangeName}
+                    <Player Player={this.state.Players[1]} changeName={this.onChangeName}
                         changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
                         hideUnchecked={this.state.hideUnChecked} />
                 </div>
