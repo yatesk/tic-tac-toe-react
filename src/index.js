@@ -6,10 +6,16 @@ import "./index.css";
 
 var destination = document.getElementById("container");
 
+function App() {
+    return (
+        <div>
+            <h1>Tic-Tac-Toe</h1>
+            <TicTacToe />
+        </div>
+    );
+}
+
 ReactDOM.render(
-    <div>
-        <h1>Tic-Tac-Toe</h1>
-        <TicTacToe/>
-    </div>,
+    <App />,
     destination
 ); 
