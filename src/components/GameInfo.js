@@ -1,53 +1,40 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 
 import "../index.css";
 
-class GameInfo extends Component {
-    constructor(props) {
-        super(props);
+function GameInfo(props) {
+    const [startIsDisabled, setStartIsDisabled] = useState(false);
+    const [resetIsDisabled, setResetIsDisabled] = useState(false);
 
-        this.state = {
-            startIsDisabled: false,
-            resetIsDisabled: false,
-        };
+    function startClicked() {
+        setStartIsDisabled(true);
+        setResetIsDisabled(false);
 
-        this.startClicked = this.startClicked.bind(this);
-        this.resetClicked = this.resetClicked.bind(this);
-        this.playAgainClicked = this.playAgainClicked.bind(this);
+        props.startClicked();
     }
 
-    startClicked() {
-        this.setState({startIsDisabled: true});
-        this.setState({resetIsDisabled: false});
+    function resetClicked() {
+        setResetIsDisabled(true);
+        setStartIsDisabled(false);
 
-        this.props.startClicked();
+        props.resetClicked();
     }
 
-    resetClicked() {
-        this.setState({resetIsDisabled: true});
-        this.setState({startIsDisabled: false});
+    function playAgainClicked() {
 
-        this.props.resetClicked();
+        props.playAgainClicked();
     }
 
-    playAgainClicked() {
-
-        this.props.playAgainClicked();
-    }
-
-
-    render() {
-        return (
-            <div>
-                <h4>{this.props.gameInfo}</h4>
-                <div>                                                                              
-                    <input type="button" id="start" disabled={this.state.startIsDisabled} onClick={this.startClicked} value="Start"/> 
-                    <input type="button" id="reset" disabled={this.state.resetIsDisabled} onClick={this.resetClicked} value="Reset"/> 
-                </div>
-                <input type="button" id="playAgain" className={this.props.playAgainIsHidden ? 'hidden' : ''}  onClick={this.playAgainClicked} value="Play Again?"/> 
+    return (
+        <div>
+            <h4>{props.gameInfo}</h4>
+            <div>                                                                              
+                <input type="button" id="start" disabled={startIsDisabled} onClick={startClicked} value="Start"/> 
+                <input type="button" id="reset" disabled={resetIsDisabled} onClick={resetClicked} value="Reset"/> 
             </div>
-        );
-    }
+            <input type="button" id="playAgain" className={props.playAgainIsHidden ? 'hidden' : ''}  onClick={playAgainClicked} value="Play Again?"/> 
+        </div>
+    );
 }
 
 export default GameInfo;
