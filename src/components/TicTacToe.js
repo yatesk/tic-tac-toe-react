@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState  } from "react";
 
 import GameInfo from "./GameInfo"
 import Player from "./Player"
@@ -27,73 +27,64 @@ const buildInitialState = () => ({
             AIDifficulty: "Easy",
             totalWins: 0
         }],
-
-    board: ['', '', '',
-            '', '', '',
-            '', '', ''],
-    totalMarkedCells: 0,
-    whoseTurn: 0,
-    disableBoard: true,
-    gameInfo: "Click Start",
-    playAgainIsHidden: true,
-    hideUnChecked: false,
 });
 
-class TicTacToe extends Component {
-    constructor(props) {
-        super(props);
+function TicTacToe() {
+    const [theState, setTheState] = useState({...buildInitialState()});
 
-        this.state = {
-            ...buildInitialState()
-        };
+    const [disableBoard, setDisableBoard] = useState(true);
+    const [hideUnchecked, setHideUnchecked] = useState(false);
+    const [playAgainIsHidden, setPlayAgainIsHidden] = useState(true);
 
-        this.startClicked = this.startClicked.bind(this);
-        this.resetClicked = this.resetClicked.bind(this);
-        this.playAgainClicked = this.playAgainClicked.bind(this);
+    const [whoseTurn, setWhoseTurn] = useState(0);
+    const [totalMarkedCells, setTotalMarkedCells] = useState(0);
 
-        this.onChangeName = this.onChangeName.bind(this);
-        this.onChangeHumanOrAI = this.onChangeHumanOrAI.bind(this);
-        this.onChangeAIDifficulty = this.onChangeAIDifficulty.bind(this);
+    const [gameInfo, setGameInfo] = useState("Click Start");
 
-        this.cellClicked = this.cellClicked.bind(this);
-    }
+    const [board, setBoard] = useState(['', '', '',
+                                        '', '', '',
+                                        '', '', '']);
 
-    startClicked() {
-        this.setState({ hideUnChecked: true });
-        this.setState({ disableBoard: false });
+    function startClicked() {
+        setHideUnchecked(true);
+        setDisableBoard(false);
 
-        if (this.state.Players[0].humanOrAI === 'AI') {
-            this.AIMove();
+        if (theState.Players[0].humanOrAI === 'AI') {
+            AIMove();
         }
     }
 
-    resetClicked() {
-        this.setState({ ...buildInitialState() });
+    function resetClicked() {
+        setHideUnchecked(false);
+        setDisableBoard(true);
+
+        setTheState({...buildInitialState()});
     }
 
-    playAgainClicked() {
+    function playAgainClicked() {
         const newBoard = [  '', '', '',
                             '', '', '',
                             '', '', ''];
-        this.setState({ board: newBoard });
-        this.setState({ playAgainIsHidden: true });
-        this.setState({ totalMarkedCells: 0 });
-        this.setState({ disableBoard: false });
+
+        setBoard(newBoard);
+        
+        setPlayAgainIsHidden(true);
 
         // loser goes first next game
-        const nextTurn = 1 - this.state.whoseTurn;
+        const nextTurn = 1 - whoseTurn;
 
-        this.setState({ whoseTurn: nextTurn });
+        setWhoseTurn(nextTurn);
     }
 
-    onChangeName(event, id) {
-        let players = [...this.state.Players];
-        players[id].name = event.target.value;
-        this.setState({ players });
+    function onChangeName(event, id) {
+         let players = [...theState.Players];
+         players[id].name = event.target.value;
+
+         setTheState({...theState, Players: players});
     }
 
-    onChangeHumanOrAI(event, id) {
-        let players = [...this.state.Players];
+    function onChangeHumanOrAI(event, id) {
+        let players = [...theState.Players];
 
         players[id].humanOrAI = event.target.value;
 
@@ -103,100 +94,119 @@ class TicTacToe extends Component {
             players[id].hideAIDifficultyChoice = true;
         }
 
-        this.setState({ players });
+        setTheState({...theState, Players: players});
     }
 
-    onChangeAIDifficulty(event, id) {
+    function onChangeAIDifficulty(event, id) {
         let players = [...this.state.Players];
         players[id].AIDifficulty = event.target.value;
-        this.setState({ players });
+
+        setTheState({...theState, Players: players});
     }
 
-    cellClicked(event) {
-        this.markCell(parseInt(event.target.id));
+    function cellClicked(event) {
+         markCell(parseInt(event.target.id));
     }
 
-    AIMove() {
+    function AIMove() {
         // AI MOVES
-        if (this.state.Players[this.state.whoseTurn].humanOrAI === 'AI') {
-            if (this.state.Players[this.state.whoseTurn].AIDifficulty === "Easy") {
+        if (theState.Players[whoseTurn].humanOrAI === 'AI') {
+            if (theState.Players[whoseTurn].AIDifficulty === "Easy") {
                 console.log("p1 easy");
-                this.markCell(AI.Easy(this.state.board));
-            } else if (this.state.Players[this.state.whoseTurn].AIDifficulty === "Medium") {
+                markCell(AI.Easy(board));
+            } else if (theState.Players[whoseTurn].AIDifficulty === "Medium") {
                 console.log("p1 medium");
-                this.markCell(AI.Medium(this.state.board));
+                markCell(AI.Medium(board));
             }
         }
     }
 
-    markCell(index) {
-        if (this.state.board[index] === '') {
-            let newBoard = [...this.state.board];
+    function markCell(index) {
+        if (board[index] === '') {
+            let newBoard = [...board];
 
-            newBoard[index] = this.state.Players[this.state.whoseTurn].marker;
+            newBoard[index] = theState.Players[whoseTurn].marker;
 
-            this.setState({ board: newBoard });
-            this.setState({ totalMarkedCells: this.state.totalMarkedCells + 1 })
+            setBoard(newBoard);
+            setTotalMarkedCells(totalMarkedCells + 1);
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.checkForWinner(this.state.Players[this.state.whoseTurn].marker)) {
-            this.gameOver();
-        } else if(this.state.totalMarkedCells != prevState.totalMarkedCells){
-            this.nextPlayersTurn(prevState);
-            this.AIMove();
+    useEffect(() => {
+        if (checkForWinner(theState.Players[whoseTurn].marker)) {
+            gameOver();
+        } 
+        
+        // MAKE AN ELSE IF   
+        else {
+            nextPlayersTurn();
+            AIMove();
         }
-    }
 
-    gameOver() {
-        if (this.state.totalMarkedCells === 9) {
+        // } else if(theState.totalMarkedCells != prevState.totalMarkedCells){
+        //     nextPlayersTurn(prevState);
+        //     AIMove();
+        // }
+
+    });
+
+    // componentDidUpdate(prevProps, prevState) {
+    //     if (this.checkForWinner(this.state.Players[this.state.whoseTurn].marker)) {
+    //         this.gameOver();
+    //     } else if(this.state.totalMarkedCells != prevState.totalMarkedCells){
+    //         this.nextPlayersTurn(prevState);
+    //         this.AIMove();
+    //     }
+    // }
+
+    function gameOver() {
+        if (totalMarkedCells === 9) {
             // to avoid infinite loop
-            this.setStateOnlyWhenValueChanged('gameInfo', "Tie.");
+            setGameInfo("Tie.");
         }
         /// player 1 wins
-        else if (this.state.Players[0].marker === this.state.Players[this.state.whoseTurn].marker) {
-            this.setStateOnlyWhenValueChanged('Players[0].totalWins', 55);
-            this.setStateOnlyWhenValueChanged('gameInfo', this.state.Players[0].name + " won!");
+        else if (theState.Players[0].marker === theState.Players[whoseTurn].marker) {
+            setStateOnlyWhenValueChanged('Players[0].totalWins', 55);
+            setGameInfo(theState.Players[0].name + " won!");
         } 
         // player 2 wins
-        else if (this.state.Players[1].marker === this.state.Players[this.state.whoseTurn].marker) {
-            this.setStateOnlyWhenValueChanged('gameInfo', this.state.Players[1].name + " won!");
+        else if (theState.Players[1].marker === theState.Players[whoseTurn].marker) {
+            setGameInfo(theState.Players[1].name + " won!");
         }
 
-        this.setStateOnlyWhenValueChanged('disableBoard', true);
-        this.setStateOnlyWhenValueChanged('playAgainIsHidden', false);
+        setDisableBoard(true);
+        setPlayAgainIsHidden(false);
     }
 
     // Prevents componentDidUpdate from entering an infinite loop
-    setStateOnlyWhenValueChanged(property, value) {
-        if (this.state[property] !== value) {
-            this.setState({[property]: value});
+    function setStateOnlyWhenValueChanged(property, value) {
+        if (theState[property] !== value) {
+            setTheState({...theState, [property]: value});
         }
     }
 
-    // componentWillUpdate(object nextProps, object nextState)
-    // instead - Using useState with useEffect
+    // // componentWillUpdate(object nextProps, object nextState)
+    // // instead - Using useState with useEffect
 
-    checkForWinner(whoseTurnMarker) {
-        if (this.state.totalMarkedCells === 9) {
+    function checkForWinner(whoseTurnMarker) {
+        if (totalMarkedCells === 9) {
             // game ends in tie - no winner
             return true;
         }
 
-        if (this.checkForWinningLine() === whoseTurnMarker) {
+        if (checkForWinningLine() === whoseTurnMarker) {
             return true;
         }
 
         return false;
     }
 
-    checkForWinningLine() {
+    function checkForWinningLine() {
         // horizontal check
         for (let index = 0; index < 3; index++) {
-            let a = this.state.board[0 + (index * 3)];
-            let b = this.state.board[1 + (index * 3)];
-            let c = this.state.board[2 + (index * 3)];
+            let a = board[0 + (index * 3)];
+            let b = board[1 + (index * 3)];
+            let c = board[2 + (index * 3)];
 
             if (a === b && a === c && b === c) {
                 return a;
@@ -205,9 +215,9 @@ class TicTacToe extends Component {
 
         // vertical check
         for (let index = 0; index < 3; index++) {
-            let a = this.state.board[0 + index];
-            let b = this.state.board[3 + index];
-            let c = this.state.board[6 + index];
+            let a = board[0 + index];
+            let b = board[3 + index];
+            let c = board[6 + index];
 
             if (a === b && a === c && b === c) {
                 return a;
@@ -215,49 +225,46 @@ class TicTacToe extends Component {
         }
 
         // upper left to lower right diagonal check 
-        if (this.state.board[0] === this.state.board[4] && this.state.board[0] === this.state.board[8] && this.state.board[4] === this.state.board[8]) {
+        if (board[0] === board[4] && board[0] === board[8] && board[4] === board[8]) {
 
-            return this.state.board[0];
+            return board[0];
         }
 
         // upper right to lower left diagonal check
-        if (this.state.board[2] === this.state.board[4] && this.state.board[2] === this.state.board[6] && this.state.board[4] === this.state.board[6]) {
-            return this.state.board[2];
+        if (board[2] === board[4] && board[2] === board[6] && board[4] === board[6]) {
+            return board[2];
         }
 
         return '';
     }
 
-
-    nextPlayersTurn(prevState) {
-        if (this.state.whoseTurn === prevState.whoseTurn) {
+    function nextPlayersTurn() {
+     //   if (theState.whoseTurn === prevState.whoseTurn) {
             // const nextTurn = this.state.whoseTurn === this.state.Players[0].marker ? this.state.Players[1].marker : this.state.Players[0].marker;
-            
-            const nextTurn = 1 - this.state.whoseTurn;
+            const nextTurn = 1 - whoseTurn;
 
-            this.setState({ whoseTurn: nextTurn });
-        }
+            setWhoseTurn(nextTurn);
+     //   }
     }
 
-    render() {
-        return (
-            <div>
-                <div className="gameInfo">
-                    <GameInfo gameInfo={this.state.gameInfo} playAgainIsHidden={this.state.playAgainIsHidden} startClicked={this.startClicked} resetClicked={this.resetClicked} playAgainClicked={this.playAgainClicked}/>
-                </div>
-
-                <div className="mainGrid">
-                    <Player Player={this.state.Players[0]} changeName={this.onChangeName}
-                        changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
-                        hideUnchecked={this.state.hideUnChecked} />
-                    <GameBoard board={this.state.board} disableBoard={this.state.disableBoard} cellClicked={this.cellClicked} />
-                    <Player Player={this.state.Players[1]} changeName={this.onChangeName}
-                        changeHumanOrAI={this.onChangeHumanOrAI} changeAIDifficulty={this.onChangeAIDifficulty}
-                        hideUnchecked={this.state.hideUnChecked} />
-                </div>
+    return (
+        <div>
+            <div className="gameInfo">
+                <GameInfo gameInfo={gameInfo} playAgainIsHidden={playAgainIsHidden} startClicked={startClicked} resetClicked={resetClicked} playAgainClicked={playAgainClicked}/>
             </div>
-        );
-    }
+
+            <div className="mainGrid">
+                <Player Player={theState.Players[0]} changeName={onChangeName}
+                    changeHumanOrAI={onChangeHumanOrAI} changeAIDifficulty={onChangeAIDifficulty}
+                    hideUnchecked={hideUnchecked} />
+                <GameBoard board={board} disableBoard={disableBoard} cellClicked={cellClicked} />
+                <Player Player={theState.Players[1]} changeName={onChangeName}
+                    changeHumanOrAI={onChangeHumanOrAI} changeAIDifficulty={onChangeAIDifficulty}
+                    hideUnchecked={hideUnchecked} />
+            </div>
+        </div>
+    );
+
 }
 
 export default TicTacToe;
