@@ -1,10 +1,10 @@
 import React from "react";
 import "../index.css";
 
-function Player ({Player, changeName, changeHumanOrAI, changeAIDifficulty, hideUnchecked}) {
+function Player ({thePlayer, changeHumanOrAI, changeAIDifficulty, hideUnchecked}) {
 
   function hideUnselectedPlayers(playerChecked) {
-    let isHideUncheckedHidden = hideUnchecked && !(Player.humanOrAI === playerChecked)
+    let isHideUncheckedHidden = hideUnchecked && !(thePlayer.humanOrAI === playerChecked)
 
     if (isHideUncheckedHidden) {
       return 'hidden';
@@ -13,7 +13,7 @@ function Player ({Player, changeName, changeHumanOrAI, changeAIDifficulty, hideU
   }
 
   function hideUnselectedAIDifficulty(AIDifficultyChecked) {
-    let isHideUncheckedHidden = hideUnchecked && !(Player.AIDifficulty === AIDifficultyChecked)
+    let isHideUncheckedHidden = hideUnchecked && !(thePlayer.AIDifficulty === AIDifficultyChecked)
 
     if (isHideUncheckedHidden) {
       return 'hidden';
@@ -23,22 +23,22 @@ function Player ({Player, changeName, changeHumanOrAI, changeAIDifficulty, hideU
 
     return (
         <div className='sidebar'>
-        <input type="text" id="playerName" value={Player.name} onChange={(e) => {changeName(e, Player.id)}} className="playerName"/>
+        <label id="playerMarker" className="playerMarker">{thePlayer.marker}</label>
         <div>
-          <input type="radio" className={hideUnselectedPlayers('Human')} id={"player"+Player.id+"Human"} name={"player"+Player.id} value="Human" checked={Player.humanOrAI === 'Human'} onChange={(e) => {changeHumanOrAI(e, Player.id)} }/>
-          <label htmlFor={"player"+Player.id+"Human"} className={hideUnselectedPlayers('Human')}>Human</label>
-          <input type="radio" className={hideUnselectedPlayers('AI')} id={"player"+Player.id+"AI"} name={"player"+Player.id} value="AI" checked={Player.humanOrAI === 'AI'} onChange={(e) => {changeHumanOrAI(e, Player.id)}}/>
-          <label htmlFor={"player"+Player.id+"AI"} className={hideUnselectedPlayers('AI')}>AI</label>
+          <input type="radio" className={hideUnselectedPlayers('Human')} id={"player"+thePlayer.id+"Human"} name={"player"+thePlayer.id} value="Human" checked={thePlayer.humanOrAI === 'Human'} onChange={(e) => {changeHumanOrAI(e, thePlayer.id)} }/>
+          <label htmlFor={"player"+thePlayer.id+"Human"} className={hideUnselectedPlayers('Human')}>Human</label>
+          <input type="radio" className={hideUnselectedPlayers('AI')} id={"player"+thePlayer.id+"AI"} name={"player"+thePlayer.id} value="AI" checked={thePlayer.humanOrAI === 'AI'} onChange={(e) => {changeHumanOrAI(e, thePlayer.id)}}/>
+          <label htmlFor={"player"+thePlayer.id+"AI"} className={hideUnselectedPlayers('AI')}>AI</label>
         </div>
-        <div className={Player.hideAIDifficultyChoice ? 'hidden' : ''}>
-          <input type="radio" className={hideUnselectedAIDifficulty('Easy')} id={"player"+Player.id+"Easy"} name={"player"+Player.id+Player.AIDifficulty} value="Easy" checked={Player.AIDifficulty === 'Easy'} onChange={(e) => {changeAIDifficulty(e, Player.id)}}/>
-          <label htmlFor={"player"+Player.id+"Easy"} className={hideUnselectedAIDifficulty('Easy')}>Easy</label>
-          <input type="radio" className={hideUnselectedAIDifficulty('Medium')} id={"player"+Player.id+"Medium"} name={"player"+Player.id+Player.AIDifficulty} value="Medium" checked={Player.AIDifficulty === 'Medium'} onChange={(e) => {changeAIDifficulty(e, Player.id)}}/>
-          <label htmlFor={"player"+Player.id+"Medium"} className={hideUnselectedAIDifficulty('Medium')}>Medium</label>
+        <div className={thePlayer.hideAIDifficultyChoice ? 'hidden' : ''}>
+          <input type="radio" className={hideUnselectedAIDifficulty('Easy')} id={"player"+thePlayer.id+"Easy"} name={"player"+thePlayer.id+thePlayer.AIDifficulty} value="Easy" checked={thePlayer.AIDifficulty === 'Easy'} onChange={(e) => {changeAIDifficulty(e, thePlayer.id)}}/>
+          <label htmlFor={"player"+thePlayer.id+"Easy"} className={hideUnselectedAIDifficulty('Easy')}>Easy</label>
+          <input type="radio" className={hideUnselectedAIDifficulty('Medium')} id={"player"+thePlayer.id+"Medium"} name={"player"+thePlayer.id+thePlayer.AIDifficulty} value="Medium" checked={thePlayer.AIDifficulty === 'Medium'} onChange={(e) => {changeAIDifficulty(e, thePlayer.id)}}/>
+          <label htmlFor={"player"+thePlayer.id+"Medium"} className={hideUnselectedAIDifficulty('Medium')}>Medium</label>
         </div>
   
         <label className='wins'>Wins: </label>
-        <label className='wins'>{Player.totalWins}</label>
+        <label className='wins'>{thePlayer.totalWins}</label>
       </div>
     );
 }

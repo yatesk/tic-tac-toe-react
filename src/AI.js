@@ -1,5 +1,4 @@
-
-// AIGetRandomEmptyCellIndex
+// AI Gets Random Empty Cell Index
 export function Easy(board) {
     let openCells = [];
 
